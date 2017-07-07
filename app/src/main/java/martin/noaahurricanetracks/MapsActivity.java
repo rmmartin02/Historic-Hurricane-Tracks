@@ -1,15 +1,22 @@
 package martin.noaahurricanetracks;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -87,7 +94,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             TrackPoint oldPoint = hurricaneList.get(i).getTrackPoints().get(0);
             for (int j = 1; j < hurricaneList.get(i).getTrackPoints().size(); j++) {
                 TrackPoint point = hurricaneList.get(i).getTrackPoints().get(j);
-                mMap.addMarker(new MarkerOptions().position(new LatLng(point.getLatitude(),point.getLongitude())).title(hurricaneList.get(i).getName()));
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(point.getLatitude(),point.getLongitude()))
+                        .title(hurricaneList.get(i).getName())
+                        .snippet("" +
+                                "Date: " + point.getISO_time() + "" +
+                                "Wind(kt): " + point.getWind() + "" +
+                                "Pressure(mb): " + point.getPressure() +
+                                ""));
 
                 PolylineOptions polyLineOptions = new PolylineOptions();
                 polyLineOptions.add(new LatLng(oldPoint.getLatitude(), oldPoint.getLongitude()));
@@ -141,4 +155,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return result;
     }
+
+    //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MarkerDemoActivity.java
 }
