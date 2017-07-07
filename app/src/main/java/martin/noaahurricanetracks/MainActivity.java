@@ -1,6 +1,7 @@
 package martin.noaahurricanetracks;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -23,29 +25,43 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
         setContentView(R.layout.activity_main);
 
         // Spinner element
-        Spinner spinner = (Spinner) findViewById(R.id.basinSpinner);
+        final Spinner spinner = (Spinner) findViewById(R.id.basinSpinner);
 
         // Spinner click listener
         spinner.setOnItemSelectedListener(this);
 
         // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
-        categories.add("North Atlantic");
-        categories.add("South Atlantic");
-        categories.add("East Pacific");
-        categories.add("West Pacific");
-        categories.add("South Pacific");
-        categories.add("North Indian");
-        categories.add("South Indian");
+        List<String> basinList = new ArrayList<String>();
+        basinList.add("North Atlantic");
+        basinList.add("South Atlantic");
+        basinList.add("East Pacific");
+        basinList.add("West Pacific");
+        basinList.add("South Pacific");
+        basinList.add("North Indian");
+        basinList.add("South Indian");
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, basinList);
 
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
+
+        //search button
+        Button searchButton = (Button) findViewById(R.id.searchButton);
+        // Capture button clicks
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+
+                // Start NewActivity.class
+                Intent myIntent = new Intent(MainActivity.this,
+                        MapsActivity.class);
+                myIntent.putExtra("basin", spinner.getSelectedItem().toString());
+                startActivity(myIntent);
+            }
+        });
     }
 
     @Override

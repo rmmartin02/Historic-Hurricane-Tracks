@@ -2,4 +2,11 @@
     <string name="app_name">NOAA Hurricane Tracks</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="na">North Atlantic</string>
+    <string name="sa">South Atlantic</string>
+    <string name="ep">East Pacific</string>
+    <string name="wp">West Pacific</string>
+    <string name="sp">South Pacific</string>
+    <string name="ni">North Indian</string>
+    <string name="si">South Indian </string>
 </resources>

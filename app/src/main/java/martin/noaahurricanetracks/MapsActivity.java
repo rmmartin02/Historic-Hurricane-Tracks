@@ -1,5 +1,6 @@
 package martin.noaahurricanetracks;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
@@ -46,8 +47,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Scanner s = new Scanner(getResources().openRawResource(R.raw.stormdata));
+        //Get selected basin from intent
+        Bundle bdl = getIntent().getExtras();
+        String basin = bdl.getString("basin");
         //Get data from CSV file downloaded from https://www.ncdc.noaa.gov/ibtracs/index.php?name=wmo-data
-        Scanner s = new Scanner(getResources().openRawResource(R.raw.na));
+        switch (basin){
+            case "North Atlantic": s = new Scanner(getResources().openRawResource(R.raw.na));
+                break;
+            case "South Atlantic": s = new Scanner(getResources().openRawResource(R.raw.sa));
+                break;
+            case "West Pacific": s = new Scanner(getResources().openRawResource(R.raw.wp));
+                break;
+            case "East Pacific": s = new Scanner(getResources().openRawResource(R.raw.ep));
+                break;
+            case "South Pacific": s = new Scanner(getResources().openRawResource(R.raw.sp));
+                break;
+            case "North Indian": s = new Scanner(getResources().openRawResource(R.raw.ni));
+                break;
+            case "South Indian": s = new Scanner(getResources().openRawResource(R.raw.si));
+                break;
+        }
 
         int hurrNum = -1;
         String tempSerNum = "";
