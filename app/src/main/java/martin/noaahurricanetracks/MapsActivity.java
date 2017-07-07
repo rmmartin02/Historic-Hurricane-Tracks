@@ -89,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+        // Add track point markers
         for(int i = 0; i<hurricaneList.size(); i++) {
             TrackPoint oldPoint = hurricaneList.get(i).getTrackPoints().get(0);
             for (int j = 1; j < hurricaneList.get(i).getTrackPoints().size(); j++) {
@@ -102,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 "Wind(kt): " + point.getWind() + "" +
                                 "Pressure(mb): " + point.getPressure() +
                                 ""));
-
+                //draw lines
                 PolylineOptions polyLineOptions = new PolylineOptions();
                 polyLineOptions.add(new LatLng(oldPoint.getLatitude(), oldPoint.getLongitude()));
                 //decide color based on intensity
@@ -138,22 +138,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.addPolyline(polyLineOptions);
             }
         }
-    }
-
-    public static int[] StringArrToIntArr(String[] s) {
-        int[] result = new int[s.length];
-        for (int i = 0; i < s.length; i++) {
-            result[i] = Integer.parseInt(s[i]);
-        }
-        return result;
-    }
-
-    public static float[] StringArrToFloatArr(String[] s) {
-        float[] result = new float[s.length];
-        for (int i = 0; i < s.length; i++) {
-            result[i] = Float.parseFloat(s[i]);
-        }
-        return result;
     }
 
     //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MarkerDemoActivity.java
