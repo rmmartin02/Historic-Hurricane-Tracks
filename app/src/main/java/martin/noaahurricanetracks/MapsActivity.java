@@ -21,6 +21,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private ArrayList<Hurricane> hurricaneList = new ArrayList<Hurricane>();
     private static final String TAG = MapsActivity.class.getSimpleName();
+    private static final int EXTRATROP = Color.GRAY;
+    private static final int TROPDEPR = Color.BLUE;
+    private static final int TROPSTORM = Color.GREEN;
+    private static final int CATONE = Color.YELLOW;
+    private static final int CATTWO = Color.rgb(250,132,14);
+    private static final int CATTHREE = Color.RED;
+    private static final int CATFOUR = Color.rgb(253,140,217);
+    private static final int CATFIVE = Color.MAGENTA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +84,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         for(int i = 0; i<hurricaneList.size(); i++) {
-            for (int j = 0; j < hurricaneList.get(i).getTrackPoints().size(); j++) {
+            TrackPoint oldPoint = hurricaneList.get(i).getTrackPoints().get(0);
+            for (int j = 1; j < hurricaneList.get(i).getTrackPoints().size(); j++) {
                 TrackPoint point = hurricaneList.get(i).getTrackPoints().get(j);
                 mMap.addMarker(new MarkerOptions().position(new LatLng(point.getLatitude(),point.getLongitude())).title(hurricaneList.get(i).getName()));
+
                 PolylineOptions polyLineOptions = new PolylineOptions();
-                polyLineOptions.addAll(hurricaneList.get(i).getLatLngs());
-                polyLineOptions.width(10).color(Color.RED);
+                polyLineOptions.add(new LatLng(oldPoint.getLatitude(), oldPoint.getLongitude()));
+                //decide color based on intensity
+                Log.d(TAG, String.valueOf(point.getWind()));
+                Log.d(TAG, point.getNature());
+                polyLineOptions.color(TROPDEPR);
+                if (point.getWind() >= 34.0) {
+                    polyLineOptions.color(TROPSTORM);
+                }
+                if (point.getWind() >= 64.0) {
+                    polyLineOptions.color(CATONE);
+                }
+                if (point.getWind() >= 83.0) {
+                    polyLineOptions.color(CATTWO);
+                }
+                if (point.getWind() >= 96.0) {
+                    polyLineOptions.color(CATTHREE);
+                }
+                if (point.getWind() >= 113.0) {
+                    polyLineOptions.color(CATFOUR);
+                }
+                if (point.getWind() >= 137.0){
+                    polyLineOptions.color(CATFIVE);
+                }
+                if (point.getNature().equals("ET")){
+                    polyLineOptions.color(EXTRATROP);
+                }
+                if(point.getNature().equals("DS")) {
+                    polyLineOptions.color(TROPDEPR);
+                }
+                polyLineOptions.add(new LatLng(point.getLatitude(),point.getLongitude()));
+                oldPoint = point;
                 mMap.addPolyline(polyLineOptions);
             }
         }
