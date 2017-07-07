@@ -75,7 +75,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             while (s.hasNextLine()) {
                 String[] row = s.nextLine().replace(" ", "").split(",");
                 //Put info into objects for easier manipulation
-                if (Integer.parseInt(row[1]) == 2005) {
+                //Season Selection
+                if (Integer.parseInt(row[1]) == bdl.getInt("season")) {
                     if (!row[0].equals(tempSerNum)) {
                         hurrNum++;
                         //Hurricane(String serialNumber, int season, int num, String basin, String subBasin, String name)

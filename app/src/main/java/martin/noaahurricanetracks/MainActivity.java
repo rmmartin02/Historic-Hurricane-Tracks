@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,11 +26,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
         setContentView(R.layout.activity_main);
 
         // Spinner element
-        final Spinner spinner = (Spinner) findViewById(R.id.basinSpinner);
-
+        final Spinner basinSpinner = (Spinner) findViewById(R.id.basinSpinner);
         // Spinner click listener
-        spinner.setOnItemSelectedListener(this);
-
+        basinSpinner.setOnItemSelectedListener(this);
         // Spinner Drop down elements
         List<String> basinList = new ArrayList<String>();
         basinList.add("North Atlantic");
@@ -39,15 +38,15 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
         basinList.add("South Pacific");
         basinList.add("North Indian");
         basinList.add("South Indian");
-
-        // Creating adapter for spinner
+        // reating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, basinList);
-
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
+        basinSpinner.setAdapter(dataAdapter);
+
+        //season selection
+        final EditText seasonText = (EditText) findViewById(R.id.seasonEditText);
 
         //search button
         Button searchButton = (Button) findViewById(R.id.searchButton);
@@ -58,7 +57,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
                 // Start NewActivity.class
                 Intent myIntent = new Intent(MainActivity.this,
                         MapsActivity.class);
-                myIntent.putExtra("basin", spinner.getSelectedItem().toString());
+                myIntent.putExtra("basin", basinSpinner.getSelectedItem().toString());
+                myIntent.putExtra("season", Integer.parseInt(seasonText.getText().toString()));
                 startActivity(myIntent);
             }
         });
