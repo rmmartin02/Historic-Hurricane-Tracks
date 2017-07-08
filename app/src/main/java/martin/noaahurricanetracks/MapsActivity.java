@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -115,14 +116,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             TrackPoint oldPoint = hurricaneList.get(i).getTrackPoints().get(0);
             for (int j = 1; j < hurricaneList.get(i).getTrackPoints().size(); j++) {
                 TrackPoint point = hurricaneList.get(i).getTrackPoints().get(j);
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(point.getLatitude(),point.getLongitude()))
-                        .title(hurricaneList.get(i).getName())
-                        .snippet("" +
-                                "Date: " + point.getISO_time() + "" +
-                                "Wind(kt): " + point.getWind() + "" +
-                                "Pressure(mb): " + point.getPressure() +
-                                ""));
+                int dot = R.drawable.bluedot;
+
                 //draw lines
                 PolylineOptions polyLineOptions = new PolylineOptions();
                 polyLineOptions.add(new LatLng(oldPoint.getLatitude(), oldPoint.getLongitude()));
@@ -132,31 +127,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 polyLineOptions.color(TROPDEPR);
                 if (point.getWind() >= 34.0) {
                     polyLineOptions.color(TROPSTORM);
+                    dot = R.drawable.greendot;
                 }
                 if (point.getWind() >= 64.0) {
                     polyLineOptions.color(CATONE);
+                    dot = R.drawable.yellowdot;
                 }
                 if (point.getWind() >= 83.0) {
                     polyLineOptions.color(CATTWO);
+                    dot = R.drawable.orangedot;
                 }
                 if (point.getWind() >= 96.0) {
                     polyLineOptions.color(CATTHREE);
+                    dot = R.drawable.reddot;
                 }
                 if (point.getWind() >= 113.0) {
                     polyLineOptions.color(CATFOUR);
+                    dot = R.drawable.pinkdot;
                 }
                 if (point.getWind() >= 137.0){
                     polyLineOptions.color(CATFIVE);
+                    dot = R.drawable.purpledot;
                 }
                 if (point.getNature().equals("ET")){
                     polyLineOptions.color(EXTRATROP);
+                    dot = R.drawable.greydot;
                 }
                 if(point.getNature().equals("DS")) {
                     polyLineOptions.color(TROPDEPR);
+                    dot = R.drawable.bluedot;
                 }
                 polyLineOptions.add(new LatLng(point.getLatitude(),point.getLongitude()));
                 oldPoint = point;
                 mMap.addPolyline(polyLineOptions);
+
+                mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromResource(dot))
+                        .position(new LatLng(point.getLatitude(),point.getLongitude()))
+                        .title(hurricaneList.get(i).getName())
+                        .snippet("" +
+                                "Date: " + point.getISO_time() + "" +
+                                "Wind(kt): " + point.getWind() + "" +
+                                "Pressure(mb): " + point.getPressure() +
+                                ""));
             }
         }
     }
