@@ -4,12 +4,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -138,6 +141,7 @@ public class MapsActivity extends AppCompatActivity {
                         oldPoint = point;
                         mMap.addPolyline(polyLineOptions);
 
+                        //add markers for trackpoints
                         mMap.addMarker(new MarkerOptions()
                                 .icon(BitmapDescriptorFactory.fromResource(dot))
                                 .position(new LatLng(point.getLatitude(),point.getLongitude()))
@@ -147,6 +151,20 @@ public class MapsActivity extends AppCompatActivity {
                                         "Wind(kt): " + point.getWind() + "" +
                                         "Pressure(mb): " + point.getPressure() +
                                         ""));
+                        //change on click action for markers from info window to textView split
+                        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+                        {
+
+                            @Override
+                            public boolean onMarkerClick(Marker marker) {
+                                TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
+                                tv.setText(marker.getTitle());
+                                TextView tv2 = (TextView) findViewById(R.id.trackPointInfoTextView);
+                                tv2.setText(marker.getSnippet());
+                                return true;
+                            }
+
+                        });
                     }
                 }
             }
