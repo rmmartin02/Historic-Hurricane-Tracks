@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
  */
 
 public class TrackPoint{
+    private Hurricane hurricane;
     private String ISO_time;
     private String nature;
     private float latitude;
@@ -15,6 +16,8 @@ public class TrackPoint{
     private float pressure;
     private String center;
     private String trackType;
+
+    public Hurricane getHurricane(){ return hurricane;}
 
     public String getISO_time() {
         return ISO_time;
@@ -48,7 +51,8 @@ public class TrackPoint{
         return trackType;
     }
 
-    TrackPoint(String time, String nature, float latitude, float longitude, float wind, float pressure, String center, String trackType){
+    TrackPoint(Hurricane hurricane,String time, String nature, float latitude, float longitude, float wind, float pressure, String center, String trackType){
+        this.hurricane = hurricane;
         this.ISO_time = time;
         this.nature = nature;
         this.latitude = latitude;

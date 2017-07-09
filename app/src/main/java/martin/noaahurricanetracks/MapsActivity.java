@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class MapsActivity extends AppCompatActivity {
                         tempSerNum = hurricaneList.get(hurrNum).getSerialNumber();
                     }
                     //addTrackPoint(String time, String nature, float latitude, float longitude, int wind, int pressure, String center, String trackType)
-                    hurricaneList.get(hurrNum).addTrackPoint(row[6], row[7], Float.parseFloat(row[8]), Float.parseFloat(row[9]), Float.parseFloat(row[10]), Float.parseFloat(row[11]), row[12], row[15]);
+                    hurricaneList.get(hurrNum).addTrackPoint(hurricaneList.get(hurrNum), row[6], row[7], Float.parseFloat(row[8]), Float.parseFloat(row[9]), Float.parseFloat(row[10]), Float.parseFloat(row[11]), row[12], row[15]);
                 }
             }
         } finally {
@@ -138,37 +139,50 @@ public class MapsActivity extends AppCompatActivity {
                             dot = R.drawable.bluedot;
                         }
                         polyLineOptions.add(new LatLng(point.getLatitude(),point.getLongitude()));
+                        //make clickable
                         oldPoint = point;
-                        mMap.addPolyline(polyLineOptions);
+                        Polyline polyLine = mMap.addPolyline(polyLineOptions);
+                        polyLine.setTag(hurricaneList.get(i));
+                        polyLine.setClickable(true);
 
                         //add markers for trackpoints
-                        mMap.addMarker(new MarkerOptions()
+                        Marker marker = mMap.addMarker(new MarkerOptions()
                                 .icon(BitmapDescriptorFactory.fromResource(dot))
                                 .position(new LatLng(point.getLatitude(),point.getLongitude()))
-                                .title(hurricaneList.get(i).getName())
-                                .snippet("" +
-                                        "Date: " + point.getISO_time() + "" +
-                                        "Wind(kt): " + point.getWind() + "" +
-                                        "Pressure(mb): " + point.getPressure() +
-                                        ""));
+                        );
+                        marker.setTag(point);
                         //change on click action for markers from info window to textView split
                         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
                         {
 
                             @Override
                             public boolean onMarkerClick(Marker marker) {
+                                TrackPoint trackPoint = (TrackPoint) marker.getTag();
                                 TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
-                                tv.setText(marker.getTitle());
+                                tv.setText(trackPoint.getHurricane().getName());
                                 TextView tv2 = (TextView) findViewById(R.id.trackPointInfoTextView);
-                                tv2.setText(marker.getSnippet());
+                                tv2.setText("Date: " + trackPoint.getISO_time() + "\n" +
+                                        "Wind(kt): " + trackPoint.getWind() + "\n" +
+                                        "Pressure(mb): " + trackPoint.getPressure());
                                 return true;
                             }
 
+                        });
+                        mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener()
+                        {
+                            @Override
+                            public void onPolylineClick(Polyline polyline)
+                            {
+                                Hurricane hurricane = (Hurricane) polyline.getTag();
+                                TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
+                                tv.setText(hurricane.getSerialNumber());
+                            }
                         });
                     }
                 }
             }
         });
+
     }
     //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MarkerDemoActivity.java
 }

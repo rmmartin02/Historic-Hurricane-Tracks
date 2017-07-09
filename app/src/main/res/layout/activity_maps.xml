@@ -13,7 +13,7 @@
         android:layout_weight="50"
         class="com.google.android.gms.maps.SupportMapFragment"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -21,18 +21,43 @@
 
         <TextView
             android:id="@+id/trackPointTitleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="50"
-            />
+            android:layout_width="231dp"
+            android:layout_height="76dp"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/backButton"
+            android:layout_alignBottom="@+id/backButton"
+            android:layout_toRightOf="@+id/forwardButton"
+            android:layout_toEndOf="@+id/forwardButton" />
 
         <TextView
             android:id="@+id/trackPointInfoTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="50"
-            />
+            android:layout_below="@+id/trackPointTitleTextView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true" />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/forwardButton"
+            android:layout_alignBottom="@+id/forwardButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="Back" />
+
+        <Button
+            android:id="@+id/forwardButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Forward" />
+
+    </RelativeLayout>
 
 </LinearLayout>

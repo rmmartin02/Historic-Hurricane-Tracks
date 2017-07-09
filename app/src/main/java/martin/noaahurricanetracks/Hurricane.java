@@ -53,8 +53,8 @@ public class Hurricane {
         this.trackPoints = new ArrayList<TrackPoint>();
     }
 
-    public void addTrackPoint(String time, String nature, float latitude, float longitude, float wind, float pressure, String center, String trackType){
-        trackPoints.add(new TrackPoint(time,  nature, latitude, longitude, wind, pressure, center, trackType));
+    public void addTrackPoint(Hurricane hurricane, String time, String nature, float latitude, float longitude, float wind, float pressure, String center, String trackType){
+        trackPoints.add(new TrackPoint(hurricane, time,  nature, latitude, longitude, wind, pressure, center, trackType));
     }
 
     public String toString(){
