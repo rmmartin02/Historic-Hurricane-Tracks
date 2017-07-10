@@ -8,12 +8,14 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -179,6 +181,8 @@ public class MapsActivity extends AppCompatActivity {
                                 Hurricane hurricane = (Hurricane) polyline.getTag();
                                 TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
                                 tv.setText(hurricane.getSerialNumber());
+                                //zoom to fit hurricane track
+                                //Calculate the markers to get their position
                             }
                         });
                     }
@@ -188,4 +192,15 @@ public class MapsActivity extends AppCompatActivity {
 
     }
     //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MarkerDemoActivity.java
+    private void zoomToFitHurricane(Hurricane hurricane, GoogleMap map){
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (TrackPoint trackPoint : hurricane.getTrackPoints()) {
+            builder.include(trackPoint.getLatLng());
+        }
+        LatLngBounds bounds = builder.build();
+        //Change the padding as per needed
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+        map.animateCamera(cu);
+    }
+
 }
