@@ -164,11 +164,10 @@ public class MapsActivity extends AppCompatActivity {
                                 TrackPoint trackPoint = (TrackPoint) marker.getTag();
                                 mMap.animateCamera(CameraUpdateFactory.newLatLng(trackPoint.getLatLng()));
                                 TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
-                                tv.setText(trackPoint.getHurricane().getName());
+                                tv.setText(trackPoint.getHurricane().getName() + " " + trackPoint.getHurricane().getSeason());
                                 TextView tv2 = (TextView) findViewById(R.id.trackPointInfoTextView);
                                 tv2.setText("Date: " + trackPoint.getISO_time() + "\n" +
-                                        "Wind(kt): " + trackPoint.getWind() + "\n" +
-                                        "Pressure(mb): " + trackPoint.getPressure());
+                                        "Pressure(mb): " + trackPoint.getPressure() + " Wind(kt): " + trackPoint.getWind());
                                 return true;
                             }
 
@@ -180,7 +179,7 @@ public class MapsActivity extends AppCompatActivity {
                             {
                                 Hurricane hurricane = (Hurricane) polyline.getTag();
                                 TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
-                                tv.setText(hurricane.getSerialNumber());
+                                tv.setText(hurricane.getName() + " " + hurricane.getSeason());
                                 //zoom to fit hurricane track
                                 //Calculate the markers to get their position
                             }

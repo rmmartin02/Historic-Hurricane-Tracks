@@ -23,14 +23,17 @@
             android:id="@+id/trackPointTitleTextView"
             android:layout_width="231dp"
             android:layout_height="76dp"
+            android:text="Hurricane 2006"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="24sp"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/backButton"
-            android:layout_alignBottom="@+id/backButton"
-            android:layout_toRightOf="@+id/forwardButton"
-            android:layout_toEndOf="@+id/forwardButton" />
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@+id/backButton" />
 
         <TextView
             android:id="@+id/trackPointInfoTextView"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="50"
@@ -43,11 +46,10 @@
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/forwardButton"
-            android:layout_alignBottom="@+id/forwardButton"
-            android:layout_alignParentEnd="true"
+            android:text="Back"
+            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:text="Back" />
+            android:layout_alignParentEnd="true" />
 
         <Button
             android:id="@+id/forwardButton"
