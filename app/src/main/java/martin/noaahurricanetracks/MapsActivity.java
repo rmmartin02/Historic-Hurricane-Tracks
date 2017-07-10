@@ -180,8 +180,7 @@ public class MapsActivity extends AppCompatActivity {
                                 Hurricane hurricane = (Hurricane) polyline.getTag();
                                 TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
                                 tv.setText(hurricane.getName() + " " + hurricane.getSeason());
-                                //zoom to fit hurricane track
-                                //Calculate the markers to get their position
+
                             }
                         });
                     }
@@ -192,6 +191,8 @@ public class MapsActivity extends AppCompatActivity {
     }
     //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MarkerDemoActivity.java
     private void zoomToFitHurricane(Hurricane hurricane, GoogleMap map){
+        //zoom to fit hurricane track
+        //Calculate the markers to get their position
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (TrackPoint trackPoint : hurricane.getTrackPoints()) {
             builder.include(trackPoint.getLatLng());
