@@ -14,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -27,6 +28,7 @@ import java.util.Scanner;
 public class MapsActivity extends AppCompatActivity {
 
     private ArrayList<Hurricane> hurricaneList = new ArrayList<Hurricane>();
+    private ArrayList<Marker> markerList = new ArrayList<Marker>();
     private static final String TAG = MapsActivity.class.getSimpleName();
     private static final int EXTRATROP = Color.GRAY;
     private static final int TROPDEPR = Color.BLUE;
@@ -154,7 +156,10 @@ public class MapsActivity extends AppCompatActivity {
                                 .icon(BitmapDescriptorFactory.fromResource(dot))
                                 .position(point.getLatLng())
                         );
+                        marker.setVisible(false);
                         marker.setTag(point);
+                        point.setMarker(marker);
+                        markerList.add(marker);
                         //change on click action for markers from info window to textView split
                         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
                         {
@@ -180,11 +185,61 @@ public class MapsActivity extends AppCompatActivity {
                                 Hurricane hurricane = (Hurricane) polyline.getTag();
                                 TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
                                 tv.setText(hurricane.getName() + " " + hurricane.getSeason());
+                                for(Marker marker: markerList) {
+                                    TrackPoint point = (TrackPoint) marker.getTag();
+                                    if(point.getHurricane().equals(hurricane)) {
+                                        marker.setVisible(true);
+                                    }
+                                    else{
+                                         marker.setVisible(false);
+                                    }
+                                }
 
                             }
                         });
                     }
                 }
+                //only show visible markers, listen for camera zoom
+                mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+                    @Override
+                    public void onCameraMove() {
+                        if(mMap.getCameraPosition().zoom<6){
+                            for(Marker marker: markerList){
+                                marker.setVisible(false);
+                            }
+                        }
+                        else {
+                            LatLngBounds mLatLngBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+                            double lowLat;
+                            double lowLng;
+                            double highLat;
+                            double highLng;
+
+                            if (mLatLngBounds.northeast.latitude < mLatLngBounds.southwest.latitude) {
+                                lowLat = mLatLngBounds.northeast.latitude;
+                                highLat = mLatLngBounds.southwest.latitude;
+                            } else {
+                                highLat = mLatLngBounds.northeast.latitude;
+                                lowLat = mLatLngBounds.southwest.latitude;
+                            }
+                            if (mLatLngBounds.northeast.longitude < mLatLngBounds.southwest.longitude) {
+                                lowLng = mLatLngBounds.northeast.longitude;
+                                highLng = mLatLngBounds.southwest.longitude;
+                            } else {
+                                highLng = mLatLngBounds.northeast.longitude;
+                                lowLng = mLatLngBounds.southwest.longitude;
+                            }
+                            for (Marker marker : markerList) {
+                                if (marker.getPosition().latitude <= highLat && marker.getPosition().latitude >= lowLat
+                                        && marker.getPosition().longitude <= highLng && marker.getPosition().longitude >= lowLng) {
+                                    marker.setVisible(true);
+                                } else {
+                                    marker.setVisible(false);
+                                }
+                            }
+                        }
+                    }
+                });
             }
         });
 

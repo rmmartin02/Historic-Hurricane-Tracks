@@ -1,6 +1,7 @@
 package martin.noaahurricanetracks;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 /**
  * Created by Martin on 7/6/2017.
@@ -15,6 +16,7 @@ public class TrackPoint{
     private float pressure;
     private String center;
     private String trackType;
+    private Marker marker;
 
     public Hurricane getHurricane(){ return hurricane;}
 
@@ -44,6 +46,14 @@ public class TrackPoint{
 
     public String getTrackType() {
         return trackType;
+    }
+
+    public Marker getMarker(){
+        return marker;
+    }
+
+    public void setMarker(Marker marker){
+        this.marker = marker;
     }
 
     TrackPoint(Hurricane hurricane,String time, String nature, LatLng latLng, float wind, float pressure, String center, String trackType){
