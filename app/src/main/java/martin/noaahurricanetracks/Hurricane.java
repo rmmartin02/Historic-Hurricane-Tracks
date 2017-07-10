@@ -53,8 +53,8 @@ public class Hurricane {
         this.trackPoints = new ArrayList<TrackPoint>();
     }
 
-    public void addTrackPoint(Hurricane hurricane, String time, String nature, float latitude, float longitude, float wind, float pressure, String center, String trackType){
-        trackPoints.add(new TrackPoint(hurricane, time,  nature, latitude, longitude, wind, pressure, center, trackType));
+    public void addTrackPoint(Hurricane hurricane, String time, String nature, LatLng latLng, float wind, float pressure, String center, String trackType){
+        trackPoints.add(new TrackPoint(hurricane, time,  nature, latLng, wind, pressure, center, trackType));
     }
 
     public String toString(){
@@ -68,7 +68,7 @@ public class Hurricane {
     public ArrayList<LatLng> getLatLngs(){
         ArrayList<LatLng> list = new ArrayList<LatLng>();
         for(int i = 0; i<this.trackPoints.size(); i++){
-            list.add(new LatLng(this.trackPoints.get(i).getLatitude(),this.trackPoints.get(i).getLongitude()));
+            list.add(this.trackPoints.get(i).getLatLng());
         }
         return list;
     }

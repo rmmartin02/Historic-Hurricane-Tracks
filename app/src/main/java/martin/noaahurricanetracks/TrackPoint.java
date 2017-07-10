@@ -10,8 +10,7 @@ public class TrackPoint{
     private Hurricane hurricane;
     private String ISO_time;
     private String nature;
-    private float latitude;
-    private float longitude;
+    private LatLng latLng;
     private float wind;
     private float pressure;
     private String center;
@@ -27,12 +26,8 @@ public class TrackPoint{
         return nature;
     }
 
-    public float getLatitude() {
-        return latitude;
-    }
-
-    public float getLongitude() {
-        return longitude;
+    public LatLng getLatLng(){
+        return latLng;
     }
 
     public float getWind() {
@@ -51,12 +46,11 @@ public class TrackPoint{
         return trackType;
     }
 
-    TrackPoint(Hurricane hurricane,String time, String nature, float latitude, float longitude, float wind, float pressure, String center, String trackType){
+    TrackPoint(Hurricane hurricane,String time, String nature, LatLng latLng, float wind, float pressure, String center, String trackType){
         this.hurricane = hurricane;
         this.ISO_time = time;
         this.nature = nature;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latLng = latLng;
         this.wind = wind;
         this.pressure = pressure;
         this.center = center;

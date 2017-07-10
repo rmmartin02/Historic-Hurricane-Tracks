@@ -1,5 +1,6 @@
 package martin.noaahurricanetracks;
 
+import android.graphics.Camera;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -75,7 +77,7 @@ public class MapsActivity extends AppCompatActivity {
                         tempSerNum = hurricaneList.get(hurrNum).getSerialNumber();
                     }
                     //addTrackPoint(String time, String nature, float latitude, float longitude, int wind, int pressure, String center, String trackType)
-                    hurricaneList.get(hurrNum).addTrackPoint(hurricaneList.get(hurrNum), row[6], row[7], Float.parseFloat(row[8]), Float.parseFloat(row[9]), Float.parseFloat(row[10]), Float.parseFloat(row[11]), row[12], row[15]);
+                    hurricaneList.get(hurrNum).addTrackPoint(hurricaneList.get(hurrNum), row[6], row[7], new LatLng(Float.parseFloat(row[8]), Float.parseFloat(row[9])), Float.parseFloat(row[10]), Float.parseFloat(row[11]), row[12], row[15]);
                 }
             }
         } finally {
@@ -90,18 +92,18 @@ public class MapsActivity extends AppCompatActivity {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapReady(GoogleMap mMap) {
+            public void onMapReady(final GoogleMap mMap) {
 
                 // Add track point markers
                 for(int i = 0; i<hurricaneList.size(); i++) {
                     TrackPoint oldPoint = hurricaneList.get(i).getTrackPoints().get(0);
                     for (int j = 1; j < hurricaneList.get(i).getTrackPoints().size(); j++) {
-                        TrackPoint point = hurricaneList.get(i).getTrackPoints().get(j);
+                        final TrackPoint point = hurricaneList.get(i).getTrackPoints().get(j);
                         int dot = R.drawable.bluedot;
 
                         //draw lines
                         PolylineOptions polyLineOptions = new PolylineOptions();
-                        polyLineOptions.add(new LatLng(oldPoint.getLatitude(), oldPoint.getLongitude()));
+                        polyLineOptions.add(oldPoint.getLatLng());
                         //decide color based on intensity
                         Log.d(TAG, String.valueOf(point.getWind()));
                         Log.d(TAG, point.getNature());
@@ -138,7 +140,7 @@ public class MapsActivity extends AppCompatActivity {
                             polyLineOptions.color(TROPDEPR);
                             dot = R.drawable.bluedot;
                         }
-                        polyLineOptions.add(new LatLng(point.getLatitude(),point.getLongitude()));
+                        polyLineOptions.add(point.getLatLng());
                         //make clickable
                         oldPoint = point;
                         Polyline polyLine = mMap.addPolyline(polyLineOptions);
@@ -148,7 +150,7 @@ public class MapsActivity extends AppCompatActivity {
                         //add markers for trackpoints
                         Marker marker = mMap.addMarker(new MarkerOptions()
                                 .icon(BitmapDescriptorFactory.fromResource(dot))
-                                .position(new LatLng(point.getLatitude(),point.getLongitude()))
+                                .position(point.getLatLng())
                         );
                         marker.setTag(point);
                         //change on click action for markers from info window to textView split
@@ -158,6 +160,7 @@ public class MapsActivity extends AppCompatActivity {
                             @Override
                             public boolean onMarkerClick(Marker marker) {
                                 TrackPoint trackPoint = (TrackPoint) marker.getTag();
+                                mMap.animateCamera(CameraUpdateFactory.newLatLng(trackPoint.getLatLng()));
                                 TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
                                 tv.setText(trackPoint.getHurricane().getName());
                                 TextView tv2 = (TextView) findViewById(R.id.trackPointInfoTextView);
