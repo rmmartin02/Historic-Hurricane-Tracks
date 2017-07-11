@@ -33,17 +33,28 @@ public class MapsActivity extends AppCompatActivity {
     private GoogleMap map = null;
     private ArrayList<Hurricane> hurricaneList = new ArrayList<Hurricane>();
     private ArrayList<Marker> markerList = new ArrayList<Marker>();
+    private ArrayList<Polyline> polylineList = new ArrayList<Polyline>();
     private Hurricane selectedHurricane = null;
     private TrackPoint selectedTrackPoint = null;
     private static final String TAG = MapsActivity.class.getSimpleName();
-    private static final int EXTRATROP = Color.GRAY;
-    private static final int TROPDEPR = Color.BLUE;
-    private static final int TROPSTORM = Color.GREEN;
-    private static final int CATONE = Color.YELLOW;
-    private static final int CATTWO = Color.rgb(250,132,14);
-    private static final int CATTHREE = Color.RED;
-    private static final int CATFOUR = Color.rgb(253,140,217);
-    private static final int CATFIVE = Color.MAGENTA;
+
+    public static final int EXTRATROP = Color.rgb(170,170,170);
+    public static final int TROPDEPR = Color.rgb(28,84,255);
+    public static final int TROPSTORM = Color.rgb(109,195,67);
+    public static final int CATONE = Color.rgb(255,195,9);
+    public static final int CATTWO = Color.rgb(255,115,9);
+    public static final int CATTHREE = Color.rgb(232,59,12);
+    public static final int CATFOUR = Color.rgb(232,12,174);
+    public static final int CATFIVE = Color.rgb(189,0,255);
+
+    public static final int FADEDEXTRATROP = Color.argb(64,170,170,170);
+    public static final int FADEDTROPDEPR = Color.argb(64,28,84,255);
+    public static final int FADEDTROPSTORM = Color.argb(64,109,195,67);
+    public static final int FADEDCATONE = Color.argb(64,255,195,9);
+    public static final int FADEDCATTWO = Color.argb(64,255,115,9);
+    public static final int FADEDCATTHREE = Color.argb(64,232,59,12);
+    public static final int FADEDCATFOUR = Color.argb(64,232,12,174);
+    public static final int FADEDCATFIVE = Color.argb(64,189,0,255);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +173,8 @@ public class MapsActivity extends AppCompatActivity {
                         Polyline polyLine = mMap.addPolyline(polyLineOptions);
                         polyLine.setTag(hurricaneList.get(i));
                         polyLine.setClickable(true);
+                        hurricaneList.get(i).setPolyline(polyLine);
+                        polylineList.add(polyLine);
 
                         //add markers for trackpoints
                         Marker marker = mMap.addMarker(new MarkerOptions()
@@ -188,21 +201,7 @@ public class MapsActivity extends AppCompatActivity {
                             @Override
                             public void onPolylineClick(Polyline polyline)
                             {
-                                Hurricane hurricane = (Hurricane) polyline.getTag();
-                                selectedHurricane = hurricane;
-                                selectedTrackPoint = null;
-                                TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
-                                tv.setText(hurricane.getName() + " " + hurricane.getSeason());
-                                for(Marker marker: markerList) {
-                                    TrackPoint point = (TrackPoint) marker.getTag();
-                                    if(point.getHurricane().equals(hurricane)) {
-                                        marker.setVisible(true);
-                                    }
-                                    else{
-                                         marker.setVisible(false);
-                                    }
-                                }
-
+                                hurricaneSelected(polyline);
                             }
                         });
                     }
@@ -217,6 +216,27 @@ public class MapsActivity extends AppCompatActivity {
                         for (Marker marker : markerList) {
                             marker.setVisible(false);
                         }
+                        for(Polyline line: polylineList){
+                            if(!line.getTag().equals(selectedHurricane)){
+                                int color = line.getColor();
+                                if(color == EXTRATROP || color == FADEDEXTRATROP)
+                                    line.setColor(EXTRATROP);
+                                else if(color == TROPDEPR || color == FADEDTROPDEPR)
+                                    line.setColor(TROPDEPR);
+                                else if(color == TROPSTORM || color == FADEDTROPSTORM)
+                                    line.setColor(TROPSTORM);
+                                else if(color == CATONE || color == FADEDCATONE)
+                                    line.setColor(CATONE);
+                                else if(color == CATTWO || color == FADEDCATTWO)
+                                    line.setColor(CATTWO);
+                                else if(color == CATTHREE || color == FADEDCATTHREE)
+                                    line.setColor(CATTHREE);
+                                else if(color == CATFOUR || color == FADEDCATFOUR)
+                                    line.setColor(CATFOUR);
+                                else if(color == CATFIVE || color == FADEDCATFIVE)
+                                    line.setColor(CATFIVE);
+                            }
+                        }
                     }
                 });
                 mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
@@ -228,33 +248,36 @@ public class MapsActivity extends AppCompatActivity {
                                     marker.setVisible(false);
                                 }
                             } else {
-                                LatLngBounds mLatLngBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-                                double lowLat;
-                                double lowLng;
-                                double highLat;
-                                double highLng;
-
-                                if (mLatLngBounds.northeast.latitude < mLatLngBounds.southwest.latitude) {
-                                    lowLat = mLatLngBounds.northeast.latitude;
-                                    highLat = mLatLngBounds.southwest.latitude;
-                                } else {
-                                    highLat = mLatLngBounds.northeast.latitude;
-                                    lowLat = mLatLngBounds.southwest.latitude;
-                                }
-                                if (mLatLngBounds.northeast.longitude < mLatLngBounds.southwest.longitude) {
-                                    lowLng = mLatLngBounds.northeast.longitude;
-                                    highLng = mLatLngBounds.southwest.longitude;
-                                } else {
-                                    highLng = mLatLngBounds.northeast.longitude;
-                                    lowLng = mLatLngBounds.southwest.longitude;
-                                }
+//                                LatLngBounds mLatLngBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+//                                double lowLat;
+//                                double lowLng;
+//                                double highLat;
+//                                double highLng;
+//
+//                                if (mLatLngBounds.northeast.latitude < mLatLngBounds.southwest.latitude) {
+//                                    lowLat = mLatLngBounds.northeast.latitude;
+//                                    highLat = mLatLngBounds.southwest.latitude;
+//                                } else {
+//                                    highLat = mLatLngBounds.northeast.latitude;
+//                                    lowLat = mLatLngBounds.southwest.latitude;
+//                                }
+//                                if (mLatLngBounds.northeast.longitude < mLatLngBounds.southwest.longitude) {
+//                                    lowLng = mLatLngBounds.northeast.longitude;
+//                                    highLng = mLatLngBounds.southwest.longitude;
+//                                } else {
+//                                    highLng = mLatLngBounds.northeast.longitude;
+//                                    lowLng = mLatLngBounds.southwest.longitude;
+//                                }
+//                                for (Marker marker : markerList) {
+//                                    if (marker.getPosition().latitude <= highLat && marker.getPosition().latitude >= lowLat
+//                                            && marker.getPosition().longitude <= highLng && marker.getPosition().longitude >= lowLng) {
+//                                        marker.setVisible(true);
+//                                    } else {
+//                                        marker.setVisible(false);
+//                                    }
+//                                }
                                 for (Marker marker : markerList) {
-                                    if (marker.getPosition().latitude <= highLat && marker.getPosition().latitude >= lowLat
-                                            && marker.getPosition().longitude <= highLng && marker.getPosition().longitude >= lowLng) {
-                                        marker.setVisible(true);
-                                    } else {
-                                        marker.setVisible(false);
-                                    }
+                                    marker.setVisible(true);
                                 }
                             }
                         }
@@ -274,7 +297,9 @@ public class MapsActivity extends AppCompatActivity {
                     trackPointSelected(selectedHurricane.getTrackPoints().get(indexOfNext).getMarker());
                 }
                 else if(selectedHurricane!=null){
+                    Log.d(TAG,"Forward hurricane");
                     int indexOfNext = hurricaneList.indexOf(selectedHurricane)+1;
+                    hurricaneSelected(hurricaneList.get(indexOfNext).getPolyline());
                 }
             }
         });
@@ -290,7 +315,9 @@ public class MapsActivity extends AppCompatActivity {
                     trackPointSelected(selectedHurricane.getTrackPoints().get(indexOfPrev).getMarker());
                 }
                 else if(selectedHurricane!=null){
-                    int indexOfNext = hurricaneList.indexOf(selectedHurricane)+1;
+                    Log.d(TAG,"Back hurricane");
+                    int indexOfPrev = hurricaneList.indexOf(selectedHurricane)-1;
+                    hurricaneSelected(hurricaneList.get(indexOfPrev).getPolyline());
                 }
             }
         });
@@ -306,7 +333,7 @@ public class MapsActivity extends AppCompatActivity {
         }
         LatLngBounds bounds = builder.build();
         //Change the padding as per needed
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 30);
         map.animateCamera(cu);
     }
 
@@ -329,6 +356,80 @@ public class MapsActivity extends AppCompatActivity {
         selectedHurricane = trackPoint.getHurricane();
         map.animateCamera(CameraUpdateFactory.newLatLng(trackPoint.getLatLng()));
         trackPoint.displayInfo(instance);
+    }
+
+    private void hurricaneSelected(Polyline polyline){
+        Hurricane hurricane = (Hurricane) polyline.getTag();
+
+        //make forward/backward button disappear
+        if(hurricaneList.indexOf(hurricane) == (hurricaneList.size()-1)){
+            findViewById(R.id.forwardButton).setVisibility(View.GONE);
+        }
+        else{
+            findViewById(R.id.forwardButton).setVisibility(View.VISIBLE);
+        }
+        if(hurricaneList.indexOf(hurricane) == 0){
+            findViewById(R.id.backButton).setVisibility(View.GONE);
+        }
+        else{
+            findViewById(R.id.backButton).setVisibility(View.VISIBLE);
+        }
+        selectedHurricane = hurricane;
+        selectedTrackPoint = null;
+        //dispay info and markers
+
+        hurricane.displayInfo(instance);
+        for(Marker marker: markerList) {
+            TrackPoint point = (TrackPoint) marker.getTag();
+            if(point.getHurricane().equals(hurricane)) {
+                marker.setVisible(true);
+            }
+            else{
+                marker.setVisible(false);
+            }
+        }
+        zoomToFitHurricane(hurricane, map);
+
+        for(Polyline line: polylineList){
+            if(!line.getTag().equals(selectedHurricane)){
+                int color = line.getColor();
+                if(color == EXTRATROP)
+                    line.setColor(FADEDEXTRATROP);
+                else if(color == TROPDEPR)
+                    line.setColor(FADEDTROPDEPR);
+                else if(color == TROPSTORM)
+                    line.setColor(FADEDTROPSTORM);
+                else if(color == CATONE)
+                    line.setColor(FADEDCATONE);
+                else if(color == CATTWO)
+                    line.setColor(FADEDCATTWO);
+                else if(color == CATTHREE)
+                    line.setColor(FADEDCATTHREE);
+                else if(color == CATFOUR)
+                    line.setColor(FADEDCATFOUR);
+                else if(color == CATFIVE)
+                    line.setColor(FADEDCATFIVE);
+            }
+            else{
+                int color = line.getColor();
+                if(color == EXTRATROP || color == FADEDEXTRATROP)
+                    line.setColor(EXTRATROP);
+                else if(color == TROPDEPR || color == FADEDTROPDEPR)
+                    line.setColor(TROPDEPR);
+                else if(color == TROPSTORM || color == FADEDTROPSTORM)
+                    line.setColor(TROPSTORM);
+                else if(color == CATONE || color == FADEDCATONE)
+                    line.setColor(CATONE);
+                else if(color == CATTWO || color == FADEDCATTWO)
+                    line.setColor(CATTWO);
+                else if(color == CATTHREE || color == FADEDCATTHREE)
+                    line.setColor(CATTHREE);
+                else if(color == CATFOUR || color == FADEDCATFOUR)
+                    line.setColor(CATFOUR);
+                else if(color == CATFIVE || color == FADEDCATFIVE)
+                    line.setColor(CATFIVE);
+            }
+        }
     }
 
 }

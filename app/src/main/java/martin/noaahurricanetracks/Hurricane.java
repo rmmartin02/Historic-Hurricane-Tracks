@@ -1,6 +1,9 @@
 package martin.noaahurricanetracks;
 
+import android.widget.TextView;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
 
 import java.util.ArrayList;
 
@@ -36,12 +39,21 @@ public class Hurricane {
         return name;
     }
 
+    public Polyline getPolyline(){
+        return polyline;
+    }
+
+    public void setPolyline(Polyline polyline){
+        this.polyline = polyline;
+    }
+
     private int season;
     private int num;
     private String basin;
     private String subBasin;
     private String name;
     private ArrayList<TrackPoint> trackPoints;
+    private Polyline polyline;
 
     public Hurricane(String serialNumber, int season, int num, String basin, String subBasin, String name){
         this.serialNumber = serialNumber;
@@ -73,4 +85,8 @@ public class Hurricane {
         return list;
     }
 
+    public void displayInfo(MapsActivity instance) {
+        TextView tv = (TextView) instance.findViewById(R.id.trackPointTitleTextView);
+        tv.setText(this.getName() + " " + this.getSeason());
+    }
 }
