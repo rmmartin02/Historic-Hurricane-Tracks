@@ -3,10 +3,14 @@ package martin.noaahurricanetracks;
 import android.graphics.Camera;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -206,10 +210,23 @@ public class MapsActivity extends AppCompatActivity {
                         });
                     }
                 }
+                //zoom to fit trackPoints
+                ArrayList<TrackPoint> points = new ArrayList<TrackPoint>();
+                for(Marker marker: markerList){
+                    points.add((TrackPoint)marker.getTag());
+                }
+                zoomToFitTrackPoints(points, mMap);
+
                 //only show visible markers, listen for camera zoom
                 mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
+                        //disappear info window
+                        RelativeLayout infoContainer = (RelativeLayout) findViewById(R.id.info);
+                        LinearLayout.LayoutParams  params = (LinearLayout.LayoutParams) infoContainer.getLayoutParams();
+                        params.height = 0;
+                        infoContainer.setLayoutParams(params);
+
                         Log.d(TAG,"Clicked Map");
                         selectedHurricane = null;
                         selectedTrackPoint = null;
@@ -324,11 +341,11 @@ public class MapsActivity extends AppCompatActivity {
 
     }
     //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MarkerDemoActivity.java
-    private void zoomToFitHurricane(Hurricane hurricane, GoogleMap map){
+    private void zoomToFitTrackPoints(ArrayList<TrackPoint> trackPointList, GoogleMap map){
         //zoom to fit hurricane track
         //Calculate the markers to get their position
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (TrackPoint trackPoint : hurricane.getTrackPoints()) {
+        for (TrackPoint trackPoint : trackPointList) {
             builder.include(trackPoint.getLatLng());
         }
         LatLngBounds bounds = builder.build();
@@ -338,6 +355,12 @@ public class MapsActivity extends AppCompatActivity {
     }
 
     private void trackPointSelected(Marker marker){
+        //make info window appear
+        RelativeLayout infoContainer = (RelativeLayout) findViewById(R.id.info);
+        LinearLayout.LayoutParams  params = (LinearLayout.LayoutParams) infoContainer.getLayoutParams();
+        params.height = RelativeLayout.LayoutParams.MATCH_PARENT;
+        infoContainer.setLayoutParams(params);
+
         TrackPoint trackPoint = (TrackPoint) marker.getTag();
         Log.d(TAG, "trackpoint index " + trackPoint.getHurricane().getTrackPoints().indexOf(trackPoint));
         if(trackPoint.getHurricane().getTrackPoints().indexOf(trackPoint) == (trackPoint.getHurricane().getTrackPoints().size()-1)){
@@ -359,6 +382,12 @@ public class MapsActivity extends AppCompatActivity {
     }
 
     private void hurricaneSelected(Polyline polyline){
+        //make info window appear
+        RelativeLayout infoContainer = (RelativeLayout) findViewById(R.id.info);
+        LinearLayout.LayoutParams  params = (LinearLayout.LayoutParams) infoContainer.getLayoutParams();
+        params.height = RelativeLayout.LayoutParams.MATCH_PARENT;
+        infoContainer.setLayoutParams(params);
+
         Hurricane hurricane = (Hurricane) polyline.getTag();
 
         //make forward/backward button disappear
@@ -388,7 +417,7 @@ public class MapsActivity extends AppCompatActivity {
                 marker.setVisible(false);
             }
         }
-        zoomToFitHurricane(hurricane, map);
+        zoomToFitTrackPoints(hurricane.getTrackPoints(), map);
 
         for(Polyline line: polylineList){
             if(!line.getTag().equals(selectedHurricane)){

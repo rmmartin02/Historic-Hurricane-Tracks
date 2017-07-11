@@ -4,20 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/map_container">
+    android:id="@+id/mapactivity_container">
 
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="50"
+        android:layout_weight="1"
         class="com.google.android.gms.maps.SupportMapFragment"/>
 
     <RelativeLayout
+        android:id="@+id/info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0sp"
         android:orientation="vertical"
-        android:layout_weight="50">
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/trackPointTitleTextView"
