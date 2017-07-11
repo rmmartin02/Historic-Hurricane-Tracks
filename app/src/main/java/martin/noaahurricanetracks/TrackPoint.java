@@ -1,5 +1,8 @@
 package martin.noaahurricanetracks;
 
+import android.view.View;
+import android.widget.TextView;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -50,6 +53,14 @@ public class TrackPoint{
 
     public Marker getMarker(){
         return marker;
+    }
+
+    public void displayInfo(MapsActivity instance){
+        TextView tv = (TextView) instance.findViewById(R.id.trackPointTitleTextView);
+        tv.setText(this.getHurricane().getName() + " " + this.getHurricane().getSeason());
+        TextView tv2 = (TextView) instance.findViewById(R.id.trackPointInfoTextView);
+        tv2.setText("Date: " + this.getISO_time() + "\n" +
+                "Pressure(mb): " + this.getPressure() + " Wind(kt): " + this.getWind());
     }
 
     public void setMarker(Marker marker){

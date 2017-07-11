@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,8 +29,12 @@ import java.util.Scanner;
 
 public class MapsActivity extends AppCompatActivity {
 
+    private MapsActivity instance = this;
+    private GoogleMap map = null;
     private ArrayList<Hurricane> hurricaneList = new ArrayList<Hurricane>();
     private ArrayList<Marker> markerList = new ArrayList<Marker>();
+    private Hurricane selectedHurricane = null;
+    private TrackPoint selectedTrackPoint = null;
     private static final String TAG = MapsActivity.class.getSimpleName();
     private static final int EXTRATROP = Color.GRAY;
     private static final int TROPDEPR = Color.BLUE;
@@ -43,6 +49,11 @@ public class MapsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        //get variables
+        Button forwardButton = (Button) findViewById(R.id.forwardButton);
+        Button backButton = (Button) findViewById(R.id.backButton);
+
 
         Scanner s = new Scanner(getResources().openRawResource(R.raw.stormdata));
         //Get selected basin from intent
@@ -97,6 +108,7 @@ public class MapsActivity extends AppCompatActivity {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(final GoogleMap mMap) {
+                map = mMap;
 
                 // Add track point markers
                 for(int i = 0; i<hurricaneList.size(); i++) {
@@ -166,13 +178,7 @@ public class MapsActivity extends AppCompatActivity {
 
                             @Override
                             public boolean onMarkerClick(Marker marker) {
-                                TrackPoint trackPoint = (TrackPoint) marker.getTag();
-                                mMap.animateCamera(CameraUpdateFactory.newLatLng(trackPoint.getLatLng()));
-                                TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
-                                tv.setText(trackPoint.getHurricane().getName() + " " + trackPoint.getHurricane().getSeason());
-                                TextView tv2 = (TextView) findViewById(R.id.trackPointInfoTextView);
-                                tv2.setText("Date: " + trackPoint.getISO_time() + "\n" +
-                                        "Pressure(mb): " + trackPoint.getPressure() + " Wind(kt): " + trackPoint.getWind());
+                                trackPointSelected(marker);
                                 return true;
                             }
 
@@ -183,6 +189,8 @@ public class MapsActivity extends AppCompatActivity {
                             public void onPolylineClick(Polyline polyline)
                             {
                                 Hurricane hurricane = (Hurricane) polyline.getTag();
+                                selectedHurricane = hurricane;
+                                selectedTrackPoint = null;
                                 TextView tv = (TextView) findViewById(R.id.trackPointTitleTextView);
                                 tv.setText(hurricane.getName() + " " + hurricane.getSeason());
                                 for(Marker marker: markerList) {
@@ -200,46 +208,68 @@ public class MapsActivity extends AppCompatActivity {
                     }
                 }
                 //only show visible markers, listen for camera zoom
+                mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        selectedHurricane = null;
+                        selectedTrackPoint = null;
+                    }
+                });
                 mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
                     @Override
                     public void onCameraMove() {
-                        if(mMap.getCameraPosition().zoom<6){
-                            for(Marker marker: markerList){
-                                marker.setVisible(false);
-                            }
-                        }
-                        else {
-                            LatLngBounds mLatLngBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-                            double lowLat;
-                            double lowLng;
-                            double highLat;
-                            double highLng;
-
-                            if (mLatLngBounds.northeast.latitude < mLatLngBounds.southwest.latitude) {
-                                lowLat = mLatLngBounds.northeast.latitude;
-                                highLat = mLatLngBounds.southwest.latitude;
-                            } else {
-                                highLat = mLatLngBounds.northeast.latitude;
-                                lowLat = mLatLngBounds.southwest.latitude;
-                            }
-                            if (mLatLngBounds.northeast.longitude < mLatLngBounds.southwest.longitude) {
-                                lowLng = mLatLngBounds.northeast.longitude;
-                                highLng = mLatLngBounds.southwest.longitude;
-                            } else {
-                                highLng = mLatLngBounds.northeast.longitude;
-                                lowLng = mLatLngBounds.southwest.longitude;
-                            }
-                            for (Marker marker : markerList) {
-                                if (marker.getPosition().latitude <= highLat && marker.getPosition().latitude >= lowLat
-                                        && marker.getPosition().longitude <= highLng && marker.getPosition().longitude >= lowLng) {
-                                    marker.setVisible(true);
-                                } else {
+                        if(selectedHurricane!=null) {
+                            if (mMap.getCameraPosition().zoom < 6) {
+                                for (Marker marker : markerList) {
                                     marker.setVisible(false);
+                                }
+                            } else {
+                                LatLngBounds mLatLngBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+                                double lowLat;
+                                double lowLng;
+                                double highLat;
+                                double highLng;
+
+                                if (mLatLngBounds.northeast.latitude < mLatLngBounds.southwest.latitude) {
+                                    lowLat = mLatLngBounds.northeast.latitude;
+                                    highLat = mLatLngBounds.southwest.latitude;
+                                } else {
+                                    highLat = mLatLngBounds.northeast.latitude;
+                                    lowLat = mLatLngBounds.southwest.latitude;
+                                }
+                                if (mLatLngBounds.northeast.longitude < mLatLngBounds.southwest.longitude) {
+                                    lowLng = mLatLngBounds.northeast.longitude;
+                                    highLng = mLatLngBounds.southwest.longitude;
+                                } else {
+                                    highLng = mLatLngBounds.northeast.longitude;
+                                    lowLng = mLatLngBounds.southwest.longitude;
+                                }
+                                for (Marker marker : markerList) {
+                                    if (marker.getPosition().latitude <= highLat && marker.getPosition().latitude >= lowLat
+                                            && marker.getPosition().longitude <= highLng && marker.getPosition().longitude >= lowLng) {
+                                        marker.setVisible(true);
+                                    } else {
+                                        marker.setVisible(false);
+                                    }
                                 }
                             }
                         }
                     }
                 });
+            }
+        });
+
+        //forward button, moves to next hurricane in season, or next trackpoint in track
+        forwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(selectedTrackPoint!=null){
+                    int indexOfNext = selectedHurricane.getTrackPoints().indexOf(selectedTrackPoint) + 1;
+                    trackPointSelected(selectedHurricane.getTrackPoints().get(indexOfNext).getMarker());
+                }
+                else if(selectedHurricane!=null){
+                    int indexOfNext = hurricaneList.indexOf(selectedHurricane)+1;
+                }
             }
         });
 
@@ -256,6 +286,12 @@ public class MapsActivity extends AppCompatActivity {
         //Change the padding as per needed
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
         map.animateCamera(cu);
+    }
+
+    private void trackPointSelected(Marker marker){
+        TrackPoint trackPoint = (TrackPoint) marker.getTag();
+        map.animateCamera(CameraUpdateFactory.newLatLng(trackPoint.getLatLng()));
+        trackPoint.displayInfo(instance);
     }
 
 }
