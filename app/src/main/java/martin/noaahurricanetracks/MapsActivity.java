@@ -211,14 +211,18 @@ public class MapsActivity extends AppCompatActivity {
                 mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
+                        Log.d(TAG,"Clicked Map");
                         selectedHurricane = null;
                         selectedTrackPoint = null;
+                        for (Marker marker : markerList) {
+                            marker.setVisible(false);
+                        }
                     }
                 });
                 mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
                     @Override
                     public void onCameraMove() {
-                        if(selectedHurricane!=null) {
+                        if(selectedHurricane==null) {
                             if (mMap.getCameraPosition().zoom < 6) {
                                 for (Marker marker : markerList) {
                                     marker.setVisible(false);
@@ -263,7 +267,9 @@ public class MapsActivity extends AppCompatActivity {
         forwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG,"Forward button");
                 if(selectedTrackPoint!=null){
+                    Log.d(TAG,"Forward trackpoint");
                     int indexOfNext = selectedHurricane.getTrackPoints().indexOf(selectedTrackPoint) + 1;
                     trackPointSelected(selectedHurricane.getTrackPoints().get(indexOfNext).getMarker());
                 }
@@ -290,6 +296,8 @@ public class MapsActivity extends AppCompatActivity {
 
     private void trackPointSelected(Marker marker){
         TrackPoint trackPoint = (TrackPoint) marker.getTag();
+        selectedTrackPoint = trackPoint;
+        selectedHurricane = trackPoint.getHurricane();
         map.animateCamera(CameraUpdateFactory.newLatLng(trackPoint.getLatLng()));
         trackPoint.displayInfo(instance);
     }
