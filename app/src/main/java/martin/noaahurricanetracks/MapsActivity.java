@@ -113,7 +113,7 @@ public class MapsActivity extends AppCompatActivity {
                 // Add track point markers
                 for(int i = 0; i<hurricaneList.size(); i++) {
                     TrackPoint oldPoint = hurricaneList.get(i).getTrackPoints().get(0);
-                    for (int j = 1; j < hurricaneList.get(i).getTrackPoints().size(); j++) {
+                    for (int j = 0; j < hurricaneList.get(i).getTrackPoints().size(); j++) {
                         final TrackPoint point = hurricaneList.get(i).getTrackPoints().get(j);
                         int dot = R.drawable.bluedot;
 
@@ -279,6 +279,22 @@ public class MapsActivity extends AppCompatActivity {
             }
         });
 
+        //back button, moves to previous hurricane in season, or next previous point in track
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"Back button");
+                if(selectedTrackPoint!=null){
+                    Log.d(TAG,"Back trackpoint");
+                    int indexOfPrev = selectedHurricane.getTrackPoints().indexOf(selectedTrackPoint) - 1;
+                    trackPointSelected(selectedHurricane.getTrackPoints().get(indexOfPrev).getMarker());
+                }
+                else if(selectedHurricane!=null){
+                    int indexOfNext = hurricaneList.indexOf(selectedHurricane)+1;
+                }
+            }
+        });
+
     }
     //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MarkerDemoActivity.java
     private void zoomToFitHurricane(Hurricane hurricane, GoogleMap map){
@@ -296,6 +312,19 @@ public class MapsActivity extends AppCompatActivity {
 
     private void trackPointSelected(Marker marker){
         TrackPoint trackPoint = (TrackPoint) marker.getTag();
+        Log.d(TAG, "trackpoint index " + trackPoint.getHurricane().getTrackPoints().indexOf(trackPoint));
+        if(trackPoint.getHurricane().getTrackPoints().indexOf(trackPoint) == (trackPoint.getHurricane().getTrackPoints().size()-1)){
+            findViewById(R.id.forwardButton).setVisibility(View.GONE);
+        }
+        else{
+            findViewById(R.id.forwardButton).setVisibility(View.VISIBLE);
+        }
+        if(trackPoint.getHurricane().getTrackPoints().indexOf(trackPoint) == 0){
+            findViewById(R.id.backButton).setVisibility(View.GONE);
+        }
+        else{
+            findViewById(R.id.backButton).setVisibility(View.VISIBLE);
+        }
         selectedTrackPoint = trackPoint;
         selectedHurricane = trackPoint.getHurricane();
         map.animateCamera(CameraUpdateFactory.newLatLng(trackPoint.getLatLng()));
