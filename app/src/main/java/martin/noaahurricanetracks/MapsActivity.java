@@ -1,5 +1,6 @@
 package martin.noaahurricanetracks;
 
+import android.content.Intent;
 import android.graphics.Camera;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -109,6 +110,12 @@ public class MapsActivity extends AppCompatActivity {
                     //addTrackPoint(String time, String nature, float latitude, float longitude, int wind, int pressure, String center, String trackType)
                     hurricaneList.get(hurrNum).addTrackPoint(hurricaneList.get(hurrNum), row[6], row[7], new LatLng(Float.parseFloat(row[8]), Float.parseFloat(row[9])), Float.parseFloat(row[10]), Float.parseFloat(row[11]), row[12], row[15]);
                 }
+            }
+            Log.d(TAG, "Number of hurricanes: " + hurricaneList.size());
+            if(hurricaneList.size()==0){
+                startActivity(new Intent(MapsActivity.this, MainActivity.class));
+                Toast.makeText(this, "No recorded storm this season", Toast.LENGTH_LONG).show();
+                return;
             }
         } finally {
             s.close();

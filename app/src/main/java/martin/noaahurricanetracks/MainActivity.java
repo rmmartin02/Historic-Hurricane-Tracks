@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MainActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -55,11 +56,22 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
             public void onClick(View arg0) {
 
                 // Start NewActivity.class
-                Intent myIntent = new Intent(MainActivity.this,
-                        MapsActivity.class);
+                Intent myIntent = new Intent(MainActivity.this, MapsActivity.class);
                 myIntent.putExtra("basin", basinSpinner.getSelectedItem().toString());
-                myIntent.putExtra("season", Integer.parseInt(seasonText.getText().toString()));
-                startActivity(myIntent);
+                String integerRegex = "([0-9]{0,9})";
+                if (seasonText.getText().toString().isEmpty() || !Pattern.matches(integerRegex, seasonText.getText().toString())) {
+                    Toast.makeText(arg0.getContext(), "Please enter valid number between 1848-2015", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    int season = Integer.parseInt(seasonText.getText().toString());
+                    if(season >= 1848 && season <= 2015) {
+                        myIntent.putExtra("season", season);
+                        startActivity(myIntent);
+                    }
+                    else{
+                        Toast.makeText(arg0.getContext(), "Please enter valid number between 1848-2015", Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         });
     }
