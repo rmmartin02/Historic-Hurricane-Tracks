@@ -23,24 +23,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_below="@+id/trackPointTitleTextView">
 
             <TextView
                 android:id="@+id/trackPointInfoTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/trackPointTitleTextView"
+                android:text="Hurricane 2006"
+                android:layout_above="@+id/chart"
                 android:layout_weight="1"
                 android:gravity="center" />
 
             <com.github.mikephil.charting.charts.LineChart
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="200dp"
                 android:layout_below="@+id/trackPointInfoTextView"
+                android:layout_weight="1"
                 android:id="@+id/chart" />
 
         </LinearLayout>

@@ -94,6 +94,19 @@ public class Hurricane {
     public void displayInfo(MapsActivity instance) {
         TextView tv = (TextView) instance.findViewById(R.id.trackPointTitleTextView);
         tv.setText(this.getName() + " " + this.getSeason());
+        TextView tv2 = (TextView) instance.findViewById(R.id.trackPointInfoTextView);
+        int minPressure = 2000;
+        int maxWind = 0;
+        for(TrackPoint trackPoint: trackPoints){
+            if(trackPoint.getPressure()<minPressure){
+                minPressure = (int) trackPoint.getPressure();
+            }
+            if(trackPoint.getWind()>maxWind){
+                maxWind = (int) trackPoint.getWind();
+            }
+        }
+        tv2.setText(trackPoints.get(0).getISO_time() + " - " + trackPoints.get(trackPoints.size()-1).getISO_time() + "\n" +
+        "Min Pressure: " + minPressure + "mb    Max Wind: " + maxWind + "kt");
         //set up chart
         LineChart chart = (LineChart) instance.findViewById(R.id.chart);
         List<Entry> pressureEntries = new ArrayList<Entry>();
