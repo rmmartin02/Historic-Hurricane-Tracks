@@ -1,10 +1,19 @@
 package martin.noaahurricanetracks;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Martin on 7/6/2017.
@@ -61,6 +70,36 @@ public class TrackPoint{
         TextView tv2 = (TextView) instance.findViewById(R.id.trackPointInfoTextView);
         tv2.setText("Date: " + this.getISO_time() + "\n" +
                 "Pressure(mb): " + this.getPressure() + " Wind(kt): " + this.getWind());
+        //set up chart
+        LineChart chart = (LineChart) instance.findViewById(R.id.chart);
+        List<Entry> pressureEntries = new ArrayList<Entry>();
+        List<Entry> windEntries = new ArrayList<Entry>();
+        for(int i = 0; i<hurricane.getTrackPoints().size(); i++){
+            pressureEntries.add(new Entry(i, hurricane.getTrackPoints().get(i).getPressure()));
+            windEntries.add(new Entry(i, hurricane.getTrackPoints().get(i).getWind()));
+        }
+
+        LineDataSet pressureDataSet = new LineDataSet(pressureEntries, "Pressure");
+        pressureDataSet.setColor(Color.BLUE);
+        pressureDataSet.setDrawValues(false);
+        pressureDataSet.setDrawCircles(false);
+        pressureDataSet.setAxisDependency(chart.getAxisLeft().getAxisDependency());
+
+        LineDataSet windDataSet = new LineDataSet(windEntries, "Wind");
+        windDataSet.setColor(Color.RED);
+        windDataSet.setDrawValues(false);
+        windDataSet.setDrawCircles(false);
+        windDataSet.setAxisDependency(chart.getAxisRight().getAxisDependency());
+
+        LineData lineData = new LineData();
+        lineData.addDataSet(pressureDataSet);
+        lineData.addDataSet(windDataSet);
+        chart.setData(lineData);
+        //highlight marker
+        float markerIndex = hurricane.getTrackPoints().indexOf(this);
+        chart.highlightValue(new Highlight(markerIndex,0,0),false);
+
+        chart.invalidate();
     }
 
     public void setMarker(Marker marker){

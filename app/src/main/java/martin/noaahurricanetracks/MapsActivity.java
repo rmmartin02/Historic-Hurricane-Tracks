@@ -1,18 +1,14 @@
 package martin.noaahurricanetracks;
 
 import android.content.Intent;
-import android.graphics.Camera;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -21,7 +17,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -272,34 +267,6 @@ public class MapsActivity extends AppCompatActivity {
                                     marker.setVisible(false);
                                 }
                             } else {
-//                                LatLngBounds mLatLngBounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-//                                double lowLat;
-//                                double lowLng;
-//                                double highLat;
-//                                double highLng;
-//
-//                                if (mLatLngBounds.northeast.latitude < mLatLngBounds.southwest.latitude) {
-//                                    lowLat = mLatLngBounds.northeast.latitude;
-//                                    highLat = mLatLngBounds.southwest.latitude;
-//                                } else {
-//                                    highLat = mLatLngBounds.northeast.latitude;
-//                                    lowLat = mLatLngBounds.southwest.latitude;
-//                                }
-//                                if (mLatLngBounds.northeast.longitude < mLatLngBounds.southwest.longitude) {
-//                                    lowLng = mLatLngBounds.northeast.longitude;
-//                                    highLng = mLatLngBounds.southwest.longitude;
-//                                } else {
-//                                    highLng = mLatLngBounds.northeast.longitude;
-//                                    lowLng = mLatLngBounds.southwest.longitude;
-//                                }
-//                                for (Marker marker : markerList) {
-//                                    if (marker.getPosition().latitude <= highLat && marker.getPosition().latitude >= lowLat
-//                                            && marker.getPosition().longitude <= highLng && marker.getPosition().longitude >= lowLng) {
-//                                        marker.setVisible(true);
-//                                    } else {
-//                                        marker.setVisible(false);
-//                                    }
-//                                }
                                 for (Marker marker : markerList) {
                                     marker.setVisible(true);
                                 }
@@ -347,6 +314,7 @@ public class MapsActivity extends AppCompatActivity {
         });
 
     }
+
     //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MarkerDemoActivity.java
     private void zoomToFitTrackPoints(ArrayList<TrackPoint> trackPointList, GoogleMap map){
         //zoom to fit hurricane track

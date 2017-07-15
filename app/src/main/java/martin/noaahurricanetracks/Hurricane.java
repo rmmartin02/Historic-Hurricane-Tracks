@@ -1,11 +1,17 @@
 package martin.noaahurricanetracks;
 
+import android.graphics.Color;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Martin on 7/6/2017.
@@ -88,5 +94,32 @@ public class Hurricane {
     public void displayInfo(MapsActivity instance) {
         TextView tv = (TextView) instance.findViewById(R.id.trackPointTitleTextView);
         tv.setText(this.getName() + " " + this.getSeason());
+        //set up chart
+        LineChart chart = (LineChart) instance.findViewById(R.id.chart);
+        List<Entry> pressureEntries = new ArrayList<Entry>();
+        List<Entry> windEntries = new ArrayList<Entry>();
+        for(int i = 0; i<trackPoints.size(); i++){
+           pressureEntries.add(new Entry(i, trackPoints.get(i).getPressure()));
+           windEntries.add(new Entry(i, trackPoints.get(i).getWind()));
+        }
+
+        LineDataSet pressureDataSet = new LineDataSet(pressureEntries, "Pressure");
+        pressureDataSet.setColor(Color.BLUE);
+        pressureDataSet.setDrawValues(false);
+        pressureDataSet.setDrawCircles(false);
+        pressureDataSet.setAxisDependency(chart.getAxisLeft().getAxisDependency());
+
+        LineDataSet windDataSet = new LineDataSet(windEntries, "Wind");
+        windDataSet.setColor(Color.RED);
+        windDataSet.setDrawValues(false);
+        windDataSet.setDrawCircles(false);
+        windDataSet.setAxisDependency(chart.getAxisRight().getAxisDependency());
+
+        LineData lineData = new LineData();
+        lineData.addDataSet(pressureDataSet);
+        lineData.addDataSet(windDataSet);
+
+        chart.setData(lineData);
+        chart.invalidate();
     }
 }

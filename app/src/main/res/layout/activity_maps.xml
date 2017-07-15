@@ -20,6 +20,31 @@
         android:orientation="vertical"
         android:layout_weight="1">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_below="@+id/trackPointTitleTextView">
+
+            <TextView
+                android:id="@+id/trackPointInfoTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/trackPointTitleTextView"
+                android:layout_weight="1"
+                android:gravity="center" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/trackPointInfoTextView"
+                android:id="@+id/chart" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/trackPointTitleTextView"
             android:layout_width="231dp"
@@ -31,17 +56,6 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_alignBottom="@+id/backButton" />
-
-        <TextView
-            android:id="@+id/trackPointInfoTextView"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="50"
-            android:layout_below="@+id/trackPointTitleTextView"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true" />
 
         <Button
             android:id="@+id/backButton"
