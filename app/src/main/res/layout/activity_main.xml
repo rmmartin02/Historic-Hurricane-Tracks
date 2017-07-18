@@ -46,14 +46,32 @@
         android:text="Season"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-    <EditText
-        android:id="@+id/seasonEditText"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/seasonTextView"
-        android:ems="10"
-        android:inputType="textPersonName" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_below="@+id/seasonTextView">
+
+        <EditText
+            android:id="@+id/seasonBeginText"
+            android:hint="Begin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/seasonEndText"
+            android:hint="End"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>

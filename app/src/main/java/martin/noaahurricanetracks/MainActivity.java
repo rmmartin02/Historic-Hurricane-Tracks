@@ -3,10 +3,6 @@ package martin.noaahurricanetracks;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,7 +43,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
         basinSpinner.setAdapter(dataAdapter);
 
         //season selection
-        final EditText seasonText = (EditText) findViewById(R.id.seasonEditText);
+        final EditText seasonBeginText = (EditText) findViewById(R.id.seasonBeginText);
+        final EditText seasonEndText = (EditText) findViewById(R.id.seasonEndText);
 
         //search button
         Button searchButton = (Button) findViewById(R.id.searchButton);
@@ -59,13 +56,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
                 Intent myIntent = new Intent(MainActivity.this, MapsActivity.class);
                 myIntent.putExtra("basin", basinSpinner.getSelectedItem().toString());
                 String integerRegex = "([0-9]{0,9})";
-                if (seasonText.getText().toString().isEmpty() || !Pattern.matches(integerRegex, seasonText.getText().toString())) {
-                    Toast.makeText(arg0.getContext(), "Please enter valid number between 1848-2015", Toast.LENGTH_LONG).show();
+                if (seasonBeginText.getText().toString().isEmpty() || !Pattern.matches(integerRegex, seasonBeginText.getText().toString())
+                        || seasonEndText.getText().toString().isEmpty() || !Pattern.matches(integerRegex, seasonEndText.getText().toString())) {
+                    Toast.makeText(arg0.getContext(), "Please enter valid numbers between 1848-2015", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    int season = Integer.parseInt(seasonText.getText().toString());
-                    if(season >= 1848 && season <= 2015) {
-                        myIntent.putExtra("season", season);
+                    int beginSeason = Integer.parseInt(seasonBeginText.getText().toString());
+                    int endSeason = Integer.parseInt(seasonEndText.getText().toString());
+                    if(beginSeason >= 1848 && endSeason <= 2015 && endSeason>=beginSeason) {
+                        myIntent.putExtra("beginSeason", beginSeason);
+                        myIntent.putExtra("endSeason", endSeason);
                         startActivity(myIntent);
                     }
                     else{

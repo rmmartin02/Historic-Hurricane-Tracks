@@ -7,8 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -24,7 +27,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class MapsActivity extends AppCompatActivity {
@@ -64,8 +70,11 @@ public class MapsActivity extends AppCompatActivity {
         //get variables
         Button forwardButton = (Button) findViewById(R.id.forwardButton);
         Button backButton = (Button) findViewById(R.id.backButton);
+        Button cancelButton = (Button) findViewById(R.id.cancelButton);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        TextView progressTV = (TextView) findViewById(R.id.progressTextView);
 
-
+        progressTV.setText("Getting file(s)");
         Scanner s = new Scanner(getResources().openRawResource(R.raw.stormdata));
         //Get selected basin from intent
         Bundle bdl = getIntent().getExtras();
@@ -90,12 +99,21 @@ public class MapsActivity extends AppCompatActivity {
 
         int hurrNum = -1;
         String tempSerNum = "";
+        progressTV.setText("Reading Files");
+        int beginSeason = bdl.getInt("beginSeason");
+        int endSeason = bdl.getInt("endSeason");
+        int[] seasonArray = new int[endSeason-beginSeason+1];
+        int count = 0;
+        while(count<seasonArray.length){
+            seasonArray[count] = beginSeason+count;
+            count++;
+        }
         try {
             while (s.hasNextLine()) {
                 String[] row = s.nextLine().replace(" ", "").split(",");
                 //Put info into objects for easier manipulation
                 //Season Selection
-                if (Integer.parseInt(row[1]) == bdl.getInt("season")) {
+                if (contains(seasonArray, Integer.parseInt(row[1]))) {
                     if (!row[0].equals(tempSerNum)) {
                         hurrNum++;
                         //Hurricane(String serialNumber, int season, int num, String basin, String subBasin, String name)
@@ -116,10 +134,7 @@ public class MapsActivity extends AppCompatActivity {
             s.close();
         }
 
-        for(int i = 0; i<hurricaneList.size(); i++){
-            Log.d(TAG, hurricaneList.get(i).toString());
-        }
-
+        progressTV.setText("Starting map");
         //get map fragment and ready it
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -217,6 +232,19 @@ public class MapsActivity extends AppCompatActivity {
                 for(Marker marker: markerList){
                     points.add((TrackPoint)marker.getTag());
                 }
+
+                /*
+                RelativeLayout loadContainer = (RelativeLayout) findViewById(R.id.loadingScreen);
+                LinearLayout.LayoutParams  loadParams = (LinearLayout.LayoutParams) loadContainer.getLayoutParams();
+                loadParams.height = 0;
+                loadContainer.setLayoutParams(loadParams);
+
+                FrameLayout mapContainer = (FrameLayout) findViewById(R.id.map);
+                LinearLayout.LayoutParams  params = (LinearLayout.LayoutParams) mapContainer.getLayoutParams();
+                params.height = RelativeLayout.LayoutParams.MATCH_PARENT;
+                mapContainer.setLayoutParams(params);
+                */
+
                 zoomToFitTrackPoints(points, mMap);
 
                 //only show visible markers, listen for camera zoom
@@ -274,6 +302,7 @@ public class MapsActivity extends AppCompatActivity {
                         }
                     }
                 });
+                //end map ready
             }
         });
 
@@ -312,7 +341,6 @@ public class MapsActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/MarkerDemoActivity.java
@@ -434,6 +462,15 @@ public class MapsActivity extends AppCompatActivity {
                     line.setColor(CATFIVE);
             }
         }
+    }
+
+    private boolean contains(int[] array, int num){
+        for(int n: array){
+            if(n==num){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
