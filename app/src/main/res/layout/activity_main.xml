@@ -19,7 +19,7 @@
         android:text="Basin"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-    <Spinner
+    <martin.noaahurricanetracks.MultiSpinner
         android:id="@+id/basinSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

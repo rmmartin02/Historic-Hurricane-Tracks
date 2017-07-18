@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class MainActivity extends Activity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends Activity implements MultiSpinner.multispinnerListener {
+
+    private boolean[] checkedBasins;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +25,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
         setContentView(R.layout.activity_main);
 
         // Spinner element
-        final Spinner basinSpinner = (Spinner) findViewById(R.id.basinSpinner);
-        // Spinner click listener
-        basinSpinner.setOnItemSelectedListener(this);
+        final MultiSpinner basinSpinner = (MultiSpinner) findViewById(R.id.basinSpinner);
         // Spinner Drop down elements
         List<String> basinList = new ArrayList<String>();
         basinList.add("North Atlantic");
@@ -35,12 +35,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
         basinList.add("South Pacific");
         basinList.add("North Indian");
         basinList.add("South Indian");
-        // reating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, basinList);
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // attaching data adapter to spinner
-        basinSpinner.setAdapter(dataAdapter);
+        basinSpinner.setItems(basinList,"Select Basin(s)",this);
 
         //season selection
         final EditText seasonBeginText = (EditText) findViewById(R.id.seasonBeginText);
@@ -54,7 +49,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
 
                 // Start NewActivity.class
                 Intent myIntent = new Intent(MainActivity.this, MapsActivity.class);
-                myIntent.putExtra("basin", basinSpinner.getSelectedItem().toString());
+                myIntent.putExtra("basin", basinSpinner.getChecked());
                 String integerRegex = "([0-9]{0,9})";
                 if (seasonBeginText.getText().toString().isEmpty() || !Pattern.matches(integerRegex, seasonBeginText.getText().toString())
                         || seasonEndText.getText().toString().isEmpty() || !Pattern.matches(integerRegex, seasonEndText.getText().toString())) {
@@ -77,15 +72,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // On selecting a spinner item
-        String item = parent.getItemAtPosition(position).toString();
-
-        // Showing selected spinner item
-        Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
-    }
-    public void onNothingSelected(AdapterView<?> arg0) {
-        // TODO Auto-generated method stub
+    public void onItemschecked(boolean[] checked){
     }
 
 }

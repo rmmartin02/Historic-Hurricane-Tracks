@@ -75,26 +75,31 @@ public class MapsActivity extends AppCompatActivity {
         TextView progressTV = (TextView) findViewById(R.id.progressTextView);
 
         progressTV.setText("Getting file(s)");
-        Scanner s = new Scanner(getResources().openRawResource(R.raw.stormdata));
+        ArrayList<Scanner> scanners = new ArrayList<Scanner>();
         //Get selected basin from intent
         Bundle bdl = getIntent().getExtras();
-        String basin = bdl.getString("basin");
+        boolean[] basin = (boolean[]) bdl.get("basin");
         //Get data from CSV file downloaded from https://www.ncdc.noaa.gov/ibtracs/index.php?name=wmo-data
-        switch (basin){
-            case "North Atlantic": s = new Scanner(getResources().openRawResource(R.raw.na));
-                break;
-            case "South Atlantic": s = new Scanner(getResources().openRawResource(R.raw.sa));
-                break;
-            case "West Pacific": s = new Scanner(getResources().openRawResource(R.raw.wp));
-                break;
-            case "East Pacific": s = new Scanner(getResources().openRawResource(R.raw.ep));
-                break;
-            case "South Pacific": s = new Scanner(getResources().openRawResource(R.raw.sp));
-                break;
-            case "North Indian": s = new Scanner(getResources().openRawResource(R.raw.ni));
-                break;
-            case "South Indian": s = new Scanner(getResources().openRawResource(R.raw.si));
-                break;
+        if(basin[0]){
+            scanners.add(new Scanner(getResources().openRawResource(R.raw.na)));
+        }
+        if(basin[1]){
+            scanners.add(new Scanner(getResources().openRawResource(R.raw.sa)));
+        }
+        if(basin[2]){
+            scanners.add(new Scanner(getResources().openRawResource(R.raw.ep)));
+        }
+        if(basin[3]){
+            scanners.add(new Scanner(getResources().openRawResource(R.raw.wp)));
+        }
+        if(basin[4]){
+            scanners.add(new Scanner(getResources().openRawResource(R.raw.sp)));
+        }
+        if(basin[5]){
+            scanners.add(new Scanner(getResources().openRawResource(R.raw.ni)));
+        }
+        if(basin[6]){
+            scanners.add(new Scanner(getResources().openRawResource(R.raw.si)));
         }
 
         int hurrNum = -1;
@@ -109,19 +114,21 @@ public class MapsActivity extends AppCompatActivity {
             count++;
         }
         try {
-            while (s.hasNextLine()) {
-                String[] row = s.nextLine().replace(" ", "").split(",");
-                //Put info into objects for easier manipulation
-                //Season Selection
-                if (contains(seasonArray, Integer.parseInt(row[1]))) {
-                    if (!row[0].equals(tempSerNum)) {
-                        hurrNum++;
-                        //Hurricane(String serialNumber, int season, int num, String basin, String subBasin, String name)
-                        hurricaneList.add(new Hurricane(row[0], Integer.parseInt(row[1]), Integer.parseInt(row[2]), row[3], row[4], row[5]));
-                        tempSerNum = hurricaneList.get(hurrNum).getSerialNumber();
+            for(Scanner scanner: scanners) {
+                while (scanner.hasNextLine()) {
+                    String[] row = scanner.nextLine().replace(" ", "").split(",");
+                    //Put info into objects for easier manipulation
+                    //Season Selection
+                    if (contains(seasonArray, Integer.parseInt(row[1]))) {
+                        if (!row[0].equals(tempSerNum)) {
+                            hurrNum++;
+                            //Hurricane(String serialNumber, int season, int num, String basin, String subBasin, String name)
+                            hurricaneList.add(new Hurricane(row[0], Integer.parseInt(row[1]), Integer.parseInt(row[2]), row[3], row[4], row[5]));
+                            tempSerNum = hurricaneList.get(hurrNum).getSerialNumber();
+                        }
+                        //addTrackPoint(String time, String nature, float latitude, float longitude, int wind, int pressure, String center, String trackType)
+                        hurricaneList.get(hurrNum).addTrackPoint(hurricaneList.get(hurrNum), row[6], row[7], new LatLng(Float.parseFloat(row[8]), Float.parseFloat(row[9])), Float.parseFloat(row[10]), Float.parseFloat(row[11]), row[12], row[15]);
                     }
-                    //addTrackPoint(String time, String nature, float latitude, float longitude, int wind, int pressure, String center, String trackType)
-                    hurricaneList.get(hurrNum).addTrackPoint(hurricaneList.get(hurrNum), row[6], row[7], new LatLng(Float.parseFloat(row[8]), Float.parseFloat(row[9])), Float.parseFloat(row[10]), Float.parseFloat(row[11]), row[12], row[15]);
                 }
             }
             Log.d(TAG, "Number of hurricanes: " + hurricaneList.size());
@@ -131,7 +138,9 @@ public class MapsActivity extends AppCompatActivity {
                 return;
             }
         } finally {
-            s.close();
+            for(Scanner scanner: scanners) {
+                scanner.close();
+            }
         }
 
         progressTV.setText("Starting map");

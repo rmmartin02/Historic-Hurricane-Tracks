@@ -10,7 +10,7 @@
         android:id="@+id/loadingScreen"
         android:layout_width="match_parent"
         android:layout_height="0sp"
-        android:layout_weight="0 n">
+        android:layout_weight="0">
 
         <Button
             android:id="@+id/cancelButton"
