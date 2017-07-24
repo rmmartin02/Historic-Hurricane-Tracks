@@ -12,12 +12,11 @@
         android:id="@+id/basinTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
         android:text="Basin"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <martin.noaahurricanetracks.MultiSpinner
         android:id="@+id/basinSpinner"
@@ -32,9 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Search"
-        android:layout_below="@+id/seasonTextView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp" />
+        android:layout_below="@+id/intensitySpinner"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/seasonTextView"
@@ -47,8 +45,9 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
     <LinearLayout
+        android:id="@+id/seasonLinearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_below="@+id/seasonTextView">
 
@@ -72,6 +71,23 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/intensityTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/seasonLinearLayout"
+        android:text="Intensity"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+
+    <martin.noaahurricanetracks.MultiSpinner
+        android:id="@+id/intensitySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/intensityTextView" />
 
 
 </RelativeLayout>

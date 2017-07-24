@@ -75,6 +75,29 @@ public class Hurricane {
         trackPoints.add(new TrackPoint(hurricane, time,  nature, latLng, wind, pressure, center, trackType));
     }
 
+    public float getMaxWind(){
+        float max = 0;
+        for(TrackPoint point: trackPoints){
+            if(point.getWind()>max){
+                max = point.getWind();
+            }
+        }
+        return max;
+    }
+
+    public float getMinPressure(){
+        float min = 2000;
+        for(TrackPoint point: trackPoints){
+            if(point.getPressure()<min && point.getPressure()>=800.0){
+                min = point.getPressure();
+            }
+        }
+        if(min==2000){
+            return 0;
+        }
+        return min;
+    }
+
     public String toString(){
         return "Name: " + this.name + " Season: " + this.season + " Basin(SubBasin): " + this.basin + "(" + this.subBasin + ")";
     }
@@ -95,18 +118,8 @@ public class Hurricane {
         TextView tv = (TextView) instance.findViewById(R.id.trackPointTitleTextView);
         tv.setText(this.getName() + " " + this.getSeason());
         TextView tv2 = (TextView) instance.findViewById(R.id.trackPointInfoTextView);
-        int minPressure = 2000;
-        int maxWind = 0;
-        for(TrackPoint trackPoint: trackPoints){
-            if(trackPoint.getPressure()<minPressure){
-                minPressure = (int) trackPoint.getPressure();
-            }
-            if(trackPoint.getWind()>maxWind){
-                maxWind = (int) trackPoint.getWind();
-            }
-        }
         tv2.setText(trackPoints.get(0).getISO_time() + " - " + trackPoints.get(trackPoints.size()-1).getISO_time() + "\n" +
-        "Min Pressure: " + minPressure + "mb    Max Wind: " + maxWind + "kt");
+        "Min Pressure: " + getMinPressure() + "mb    Max Wind: " + getMaxWind() + "kt");
         //set up chart
         LineChart chart = (LineChart) instance.findViewById(R.id.chart);
         List<Entry> pressureEntries = new ArrayList<Entry>();

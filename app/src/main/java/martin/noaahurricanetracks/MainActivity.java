@@ -37,6 +37,20 @@ public class MainActivity extends Activity implements MultiSpinner.multispinnerL
         basinList.add("South Indian");
         basinSpinner.setItems(basinList,"Select Basin(s)",this);
 
+        // Spinner element
+        final MultiSpinner intensitySpinner = (MultiSpinner) findViewById(R.id.intensitySpinner);
+        // Spinner Drop down elements
+        List<String> intensityList = new ArrayList<String>();
+        intensityList.add("Tropical Depression (<34kt)");
+        intensityList.add("Tropical Storm (34kt)");
+        intensityList.add("Category 1 (64kt)");
+        intensityList.add("Category 2 (83kt)");
+        intensityList.add("Category 3 (96kt)");
+        intensityList.add("Category 4 (113kt)");
+        intensityList.add("Category 5 (137kt)");
+        intensityList.add("ExtraTropical");
+        intensitySpinner.setItems(intensityList,"Select Intensities(s)",this);
+
         //season selection
         final EditText seasonBeginText = (EditText) findViewById(R.id.seasonBeginText);
         final EditText seasonEndText = (EditText) findViewById(R.id.seasonEndText);
@@ -50,6 +64,7 @@ public class MainActivity extends Activity implements MultiSpinner.multispinnerL
                 // Start NewActivity.class
                 Intent myIntent = new Intent(MainActivity.this, MapsActivity.class);
                 myIntent.putExtra("basin", basinSpinner.getChecked());
+                myIntent.putExtra("intensity", intensitySpinner.getChecked());
                 String integerRegex = "([0-9]{0,9})";
                 if (seasonBeginText.getText().toString().isEmpty() || !Pattern.matches(integerRegex, seasonBeginText.getText().toString())
                         || seasonEndText.getText().toString().isEmpty() || !Pattern.matches(integerRegex, seasonEndText.getText().toString())) {
