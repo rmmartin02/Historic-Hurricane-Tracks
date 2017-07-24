@@ -64,6 +64,34 @@ public class TrackPoint{
         return marker;
     }
 
+    public Hurricane.Category getCategory(){
+        if (nature.equals("ET")){
+            return Hurricane.Category.ET;
+        }
+        if(nature.equals("DS")) {
+            return Hurricane.Category.TD;
+        }
+        if (wind >= 137.0){
+            return Hurricane.Category.C5;
+        }
+        if (wind >= 113.0) {
+            return Hurricane.Category.C4;
+        }
+        if (wind >= 96.0) {
+            return Hurricane.Category.C3;
+        }
+        if (wind >= 83.0) {
+            return Hurricane.Category.C2;
+        }
+        if (wind >= 64.0) {
+            return Hurricane.Category.C1;
+        }
+        if (wind >= 34.0) {
+            return Hurricane.Category.TS;
+        }
+        return Hurricane.Category.TD;
+    }
+
     public void displayInfo(MapsActivity instance){
         TextView tv = (TextView) instance.findViewById(R.id.trackPointTitleTextView);
         tv.setText(this.getHurricane().getName() + " " + this.getHurricane().getSeason());

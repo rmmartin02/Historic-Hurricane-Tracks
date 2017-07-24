@@ -19,6 +19,8 @@ import java.util.List;
 
 public class Hurricane {
 
+    public enum Category{ET, TD, TS, C1, C2, C3, C4, C5};
+
     private String serialNumber;
 
     public String getSerialNumber() {
@@ -51,6 +53,16 @@ public class Hurricane {
 
     public void setPolyline(Polyline polyline){
         this.polyline = polyline;
+    }
+
+    public ArrayList<Category> getCategories(){
+        ArrayList<Category> categories = new ArrayList<Category>();
+        for(TrackPoint point: trackPoints){
+            if(!categories.contains(point.getCategory())){
+                categories.add(point.getCategory());
+            }
+        }
+        return categories;
     }
 
     private int season;

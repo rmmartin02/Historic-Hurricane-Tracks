@@ -131,6 +131,43 @@ public class MapsActivity extends AppCompatActivity {
                     }
                 }
             }
+            //remove hurricane if intensity not selected
+            boolean[] intensity = bdl.getBooleanArray("intensity");
+            boolean skip = true;
+            for(boolean b: intensity){
+                if(b){
+                    skip = false;
+                }
+            }
+            int i = 0;
+            if(intensity[8] || !skip) {
+                while (i < hurricaneList.size()) {
+                    ArrayList<Hurricane.Category> categories = hurricaneList.get(i).getCategories();
+                    boolean remove = true;
+                    if (intensity[0] && categories.contains(Hurricane.Category.TD)) {
+                        remove = false;
+                    } else if (intensity[1] && categories.contains(Hurricane.Category.TS)) {
+                        remove = false;
+                    } else if (intensity[2] && categories.contains(Hurricane.Category.C1)) {
+                        remove = false;
+                    } else if (intensity[3] && categories.contains(Hurricane.Category.C2)) {
+                        remove = false;
+                    } else if (intensity[4] && categories.contains(Hurricane.Category.C3)) {
+                        remove = false;
+                    } else if (intensity[5] && categories.contains(Hurricane.Category.C4)) {
+                        remove = false;
+                    } else if (intensity[6] && categories.contains(Hurricane.Category.C5)) {
+                        remove = false;
+                    } else if (intensity[7] && categories.contains(Hurricane.Category.ET)) {
+                        remove = false;
+                    }
+                    if (remove) {
+                        hurricaneList.remove(i);
+                    } else {
+                        i++;
+                    }
+                }
+            }
             Log.d(TAG, "Number of hurricanes: " + hurricaneList.size());
             if(hurricaneList.size()==0){
                 startActivity(new Intent(MapsActivity.this, MainActivity.class));
@@ -165,37 +202,39 @@ public class MapsActivity extends AppCompatActivity {
                         Log.d(TAG, String.valueOf(point.getWind()));
                         Log.d(TAG, point.getNature());
                         polyLineOptions.color(TROPDEPR);
-                        if (point.getWind() >= 34.0) {
-                            polyLineOptions.color(TROPSTORM);
-                            dot = R.drawable.greendot;
-                        }
-                        if (point.getWind() >= 64.0) {
-                            polyLineOptions.color(CATONE);
-                            dot = R.drawable.yellowdot;
-                        }
-                        if (point.getWind() >= 83.0) {
-                            polyLineOptions.color(CATTWO);
-                            dot = R.drawable.orangedot;
-                        }
-                        if (point.getWind() >= 96.0) {
-                            polyLineOptions.color(CATTHREE);
-                            dot = R.drawable.reddot;
-                        }
-                        if (point.getWind() >= 113.0) {
-                            polyLineOptions.color(CATFOUR);
-                            dot = R.drawable.pinkdot;
-                        }
-                        if (point.getWind() >= 137.0){
-                            polyLineOptions.color(CATFIVE);
-                            dot = R.drawable.purpledot;
-                        }
-                        if (point.getNature().equals("ET")){
-                            polyLineOptions.color(EXTRATROP);
-                            dot = R.drawable.greydot;
-                        }
-                        if(point.getNature().equals("DS")) {
-                            polyLineOptions.color(TROPDEPR);
-                            dot = R.drawable.bluedot;
+                        switch(point.getCategory()){
+                            case ET:
+                                polyLineOptions.color(EXTRATROP);
+                                dot = R.drawable.greydot;
+                                break;
+                            case TD:
+                                polyLineOptions.color(TROPDEPR);
+                                dot = R.drawable.bluedot;
+                                break;
+                            case TS:
+                                polyLineOptions.color(TROPSTORM);
+                                dot = R.drawable.greendot;
+                                break;
+                            case C1:
+                                polyLineOptions.color(CATONE);
+                                dot = R.drawable.yellowdot;
+                                break;
+                            case C2:
+                                polyLineOptions.color(CATTWO);
+                                dot = R.drawable.orangedot;
+                                break;
+                            case C3:
+                                polyLineOptions.color(CATTHREE);
+                                dot = R.drawable.reddot;
+                                break;
+                            case C4:
+                                polyLineOptions.color(CATFOUR);
+                                dot = R.drawable.pinkdot;
+                                break;
+                            case C5:
+                                polyLineOptions.color(CATFIVE);
+                                dot = R.drawable.purpledot;
+                                break;
                         }
                         polyLineOptions.add(point.getLatLng());
                         //make clickable

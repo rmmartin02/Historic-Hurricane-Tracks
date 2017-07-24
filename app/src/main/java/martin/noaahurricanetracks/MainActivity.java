@@ -49,6 +49,7 @@ public class MainActivity extends Activity implements MultiSpinner.multispinnerL
         intensityList.add("Category 4 (113kt)");
         intensityList.add("Category 5 (137kt)");
         intensityList.add("ExtraTropical");
+        intensityList.add("All");
         intensitySpinner.setItems(intensityList,"Select Intensities(s)",this);
 
         //season selection
