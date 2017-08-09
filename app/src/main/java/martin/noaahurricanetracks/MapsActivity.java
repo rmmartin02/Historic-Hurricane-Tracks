@@ -127,7 +127,7 @@ public class MapsActivity extends AppCompatActivity {
                             tempSerNum = hurricaneList.get(hurrNum).getSerialNumber();
                         }
                         //addTrackPoint(String time, String nature, float latitude, float longitude, int wind, int pressure, String center, String trackType)
-                        hurricaneList.get(hurrNum).addTrackPoint(hurricaneList.get(hurrNum), row[6], row[7], new LatLng(Float.parseFloat(row[8]), Float.parseFloat(row[9])), Float.parseFloat(row[10]), Float.parseFloat(row[11]), row[12], row[15]);
+                        hurricaneList.get(hurrNum).addTrackPoint(hurricaneList.get(hurrNum), row[6], row[7], new LatLng(Float.parseFloat(row[8]), Float.parseFloat(row[9])), Float.parseFloat(row[10]), Float.parseFloat(row[11]), row[12], row[13]);
                     }
                 }
             }

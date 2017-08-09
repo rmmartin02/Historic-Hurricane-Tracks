@@ -74,7 +74,7 @@ public class MainActivity extends Activity implements MultiSpinner.multispinnerL
                 else{
                     int beginSeason = Integer.parseInt(seasonBeginText.getText().toString());
                     int endSeason = Integer.parseInt(seasonEndText.getText().toString());
-                    if(beginSeason >= 1848 && endSeason <= 2015 && endSeason>=beginSeason) {
+                    if(beginSeason >= 1842 && endSeason <= 2016 && endSeason>=beginSeason) {
                         myIntent.putExtra("beginSeason", beginSeason);
                         myIntent.putExtra("endSeason", endSeason);
                         startActivity(myIntent);
